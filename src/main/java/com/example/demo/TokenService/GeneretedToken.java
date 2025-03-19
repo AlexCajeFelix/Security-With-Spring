@@ -20,7 +20,7 @@ public class GeneretedToken {
             String token = JWT.create()
                     .withIssuer("SpringSecurity")
                     .withSubject(user.getName())
-                    .withExpiresAt(new java.util.Date(System.currentTimeMillis() + 1800000))
+                    .withExpiresAt(new java.util.Date(System.currentTimeMillis() + 10000))
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {

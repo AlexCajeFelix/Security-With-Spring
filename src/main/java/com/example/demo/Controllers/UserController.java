@@ -4,6 +4,9 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.example.demo.Dtos.UserDto;
+import com.example.demo.Dtos.UserLoginDto;
 import com.example.demo.Dtos.UserResponse;
 import com.example.demo.Entities.User;
-import com.example.demo.Enum.UserType;
+
 import com.example.demo.Repositorys.UserRepository;
 import com.example.demo.TokenService.GeneretedToken;
 
@@ -31,13 +34,20 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login() {
-       User user = new User( null, "alex123", "123", "123456789", UserType.USER);
-        String token = tokenService.generateToken(user);
-        
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        return ResponseEntity.ok(token);
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserLoginDto userLoginDto)  {
+
+       
+        var authenticationToken = new UsernamePasswordAuthenticationToken(userLoginDto.name(), userLoginDto.password());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+        String token = tokenService.generateToken((User) authentication.getPrincipal());
+        System.out.println(token);
+
+        return ResponseEntity.ok("token " + token);
     }
 
     @GetMapping("/login")
@@ -60,6 +70,7 @@ public class UserController {
         .path("/{id}")
         .buildAndExpand(user.getId())
         .toUri();
+        
         UserResponse userResponseDto = new UserResponse(user.getId(), user.getName(), encryptedPassword, user.getDocument(), user.getRole());
 
 
