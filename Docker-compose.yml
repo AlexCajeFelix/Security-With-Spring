@@ -1,0 +1,40 @@
+version: "3.8"
+
+networks:
+  springboot:
+    driver: bridge
+
+volumes:
+  springboot:
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: meu-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springsecurity
+      MYSQL_USER: user
+      MYSQL_PASSWORD: er481620
+    ports:
+      - "3307:3306"  
+    volumes:
+      - springboot:/var/lib/mysql
+    networks:
+      - springboot
+
+  app:
+    build: spring:1.0
+    container_name: meu-springboot-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springsecurity  
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: er481620
+    networks:
+      - springboot
