@@ -25,7 +25,7 @@ services:
       - springboot
 
   app:
-    build: spring:1.0
+    build: ./spring:1.0
     container_name: meu-springboot-app
     restart: always
     ports:
@@ -33,7 +33,7 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springsecurity  
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/springsecurity
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: er481620
     networks:
