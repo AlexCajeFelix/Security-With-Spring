@@ -3,8 +3,10 @@ package com.example.demo.Controllers;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,14 +42,28 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginDto userLoginDto)  {
 
-       
-        var authenticationToken = new UsernamePasswordAuthenticationToken(userLoginDto.name(), userLoginDto.password());
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        try {
+         
+            System.out.println("Login Request - User: " + userLoginDto.name());
+    
+            var authenticationToken = new UsernamePasswordAuthenticationToken(userLoginDto.name(), userLoginDto.password());
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+    
+           
+            System.out.println("Authentication Result: " + authentication);
 
-        String token = tokenService.generateToken((User) authentication.getPrincipal());
-        System.out.println(token);
-
-        return ResponseEntity.ok("token " + token);
+            String token = tokenService.generateToken((User) authentication.getPrincipal());
+    
+        
+            System.out.println("Generated Token: " + token);
+    
+            return ResponseEntity.ok("token " + token);
+    
+        } catch (BadCredentialsException e) {
+            
+            System.out.println("Authentication Failed: Invalid credentials for " + userLoginDto.name());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid user credentials");
+        }
     }
 
     @GetMapping("/login")

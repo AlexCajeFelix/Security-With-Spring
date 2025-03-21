@@ -2,8 +2,10 @@ package com.example.demo.Entities;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.demo.Dtos.UserDto;
@@ -84,4 +86,16 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;  
     }
+
+
+
+    public User(long l, String string, String string2, String string3, List<SimpleGrantedAuthority> of) {
+    
+
+
+    }
+
+
+
+   
 }

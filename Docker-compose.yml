@@ -25,7 +25,7 @@ services:
       - springboot
 
   app:
-    build: ./spring:1.0
+    build: ./
     container_name: meu-springboot-app
     restart: always
     ports:
